@@ -1,0 +1,17 @@
+pypdfium2
+pdfplumber
+pypdf
+python-docx
+python-pptx
+openpyxl
+pandas
+odfpy
+xlrd
+Pillow
+pillow-heif
+imageio-ffmpeg
+pypandoc_binary
+markdown
+markdownify
+beautifulsoup4
+lxml

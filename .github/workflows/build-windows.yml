@@ -1,0 +1,78 @@
+name: Windows-Build
+
+# Baut Wexxxla.exe auf Windows, testet sie und veröffentlicht sie als Release "Wexxxla Oida <Version>".
+# Die Version steht in converter/__init__.py (__version__). Neue Version = Nummer dort erhöhen und pushen.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Bibliotheken installieren
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt pyinstaller
+
+      - name: Version lesen
+        id: ver
+        shell: bash
+        run: |
+          v=$(python -c "import converter; print(converter.__version__)")
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          echo "tag=oida-$v" >> "$GITHUB_OUTPUT"
+          echo "Version: Oida $v"
+
+      - name: Wexxxla.exe bauen
+        run: python build.py
+
+      - name: Test – Bild zu PDF und PDF zu Word mit der fertigen EXE
+        shell: pwsh
+        run: |
+          python -c "from PIL import Image, ImageDraw; im=Image.new('RGB',(400,200),'white'); ImageDraw.Draw(im).text((20,80),'Wexxxla Test',fill='black'); im.save('test.png')"
+          $exe = "dist\Wexxxla\Wexxxla.exe"
+          $p = Start-Process $exe -ArgumentList '--cli','test.png','pdf','out' -Wait -PassThru
+          if ($p.ExitCode -ne 0 -or -not (Test-Path out\test.pdf)) { Get-Content "$env:APPDATA\Wexxxla\log.txt" -ErrorAction SilentlyContinue; throw "PNG -> PDF fehlgeschlagen" }
+          $p = Start-Process $exe -ArgumentList '--cli','out\test.pdf','docx','out' -Wait -PassThru
+          if ($p.ExitCode -ne 0 -or -not (Test-Path out\test.docx)) { Get-Content "$env:APPDATA\Wexxxla\log.txt" -ErrorAction SilentlyContinue; throw "PDF -> Word fehlgeschlagen" }
+          Write-Host "Test erfolgreich"
+
+      - name: ZIP packen
+        shell: pwsh
+        run: |
+          Copy-Item ANLEITUNG.txt dist\Wexxxla\
+          Copy-Item LICENSE dist\Wexxxla\LICENSE.txt
+          Compress-Archive -Path dist\Wexxxla -DestinationPath "Wexxxla-Oida-${{ steps.ver.outputs.version }}-windows.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Wexxxla-Oida-${{ steps.ver.outputs.version }}-windows
+          path: Wexxxla-Oida-${{ steps.ver.outputs.version }}-windows.zip
+
+      - name: Release veröffentlichen (nur wenn es diese Version noch nicht gibt)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="${{ steps.ver.outputs.tag }}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release $tag gibt es schon – Version in converter/__init__.py erhöhen für ein neues Release."
+          else
+            gh release create "$tag" "Wexxxla-Oida-${{ steps.ver.outputs.version }}-windows.zip" \
+              --target "$GITHUB_SHA" \
+              --title "Wexxxla Oida ${{ steps.ver.outputs.version }}" \
+              --notes-file release-notes.md
+          fi

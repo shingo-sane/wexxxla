@@ -1,0 +1,78 @@
+WEXXXLA – Oida 1.0
+==================
+
+Wandelt Dateien per Drag & Drop um – alles lokal auf deinem PC, nichts wird ins Internet hochgeladen.
+
+
+STARTEN
+-------
+1. Den Ordner "Wexxxla" aus der ZIP-Datei irgendwohin entpacken (z. B. nach Dokumente).
+2. Doppelklick auf  Wexxxla.exe
+   Tipp: Rechtsklick auf Wexxxla.exe -> "Senden an" -> "Desktop (Verknüpfung erstellen)".
+Beim ersten Start fragt Windows SmartScreen eventuell nach ("Der Computer wurde durch Windows
+geschützt"): auf "Weitere Informationen" und dann "Trotzdem ausführen" klicken.
+Den Ordner kannst du verschieben oder auf einen USB-Stick kopieren.
+
+Selbst aus dem Quellcode bauen:  build_exe.bat  doppelklicken (installiert bei Bedarf Python).
+Nur kurz ausprobieren, ohne EXE:  start_ohne_exe.bat
+
+
+BEDIENUNG
+---------
+1. Dateien ins linke Feld ziehen (oder klicken und auswählen) – auch viele auf einmal.
+2. Rechts das Zielformat anklicken (z. B. PPTX).
+3. "In PPTX umwandeln" drücken.
+Die Ergebnisse landen standardmäßig in  Downloads\Konvertiert  (mit "Ändern" anpassbar).
+Bei mehreren Dateien und Ziel PDF gibt es die Option "Alle zu einer PDF zusammenfügen".
+
+
+WAS GEHT
+--------
+Dokumente:      PDF, Word (DOCX/DOC), ODT, RTF, TXT, Markdown, HTML, EPUB
+Präsentationen: PowerPoint (PPTX/PPT), ODP
+Tabellen:       Excel (XLSX/XLS), ODS, CSV, JSON
+Bilder:         PNG, JPG, WebP, BMP, GIF, TIFF, ICO, HEIC (iPhone), SVG
+Audio:          MP3, WAV, FLAC, OGG, M4A, AAC, Opus, WMA
+Video:          MP4, MKV, MOV, AVI, WebM, WMV, FLV, Video -> GIF, Video -> MP3
+
+Beispiele: PDF -> Word, PDF -> PowerPoint, PDF -> Excel (Tabellen), Word -> PowerPoint,
+PowerPoint -> Word, Excel -> PowerPoint, Excel -> Word, Word/Excel/PowerPoint -> PDF,
+PDF -> Bilder (jede Seite), Bilder -> PDF, Video -> MP3, MOV -> MP4, HEIC -> JPG ...
+Gibt es keinen direkten Weg, geht die App automatisch über Zwischenformate
+(z. B. PPT -> PPTX -> Word). Der Weg wird unter dem Knopf angezeigt.
+
+
+WICHTIG: OFFICE-PROGRAMM
+------------------------
+Für Umwandlungen wie Word -> PDF, Excel -> PDF, PowerPoint -> PDF und für alte Formate
+(DOC, XLS, PPT) braucht die App Microsoft Office ODER das kostenlose LibreOffice.
+- Ist Microsoft Office installiert, wird es automatisch benutzt (beste Qualität).
+- Sonst LibreOffice: https://de.libreoffice.org/download/download/
+Oben rechts in der App siehst du, was gefunden wurde.
+Alles andere (PDF -> Word/PowerPoint/Excel, Bilder, Audio, Video, CSV, JSON ...) funktioniert ohne Office.
+
+
+EINSTELLUNGEN (unten in der App aufklappen)
+-------------------------------------------
+- PDF -> PowerPoint: Standard ist "Bearbeitbar": Texte werden als Textfelder (mit Original-
+  Schriftart, -Größe und -Farbe), Tabellen als echte PowerPoint-Tabellen, Formen und Diagramme
+  als Formen und Bilder als Bilder eingefügt. Alternativ "Nur Bilder" (jede Seite als Bild).
+- PDF -> Word: erkennt Überschriften, Absätze, Aufzählungen, Schriftarten, Farben, Tabellen
+  (auch ohne Linien, mit verbundenen Zellen und Zellfarben), Infoboxen, Grafiken und Bilder.
+- Auflösung für PDF -> Bilder, Bildqualität, CSV-Trennzeichen, Videoqualität,
+  welches Office-Programm benutzt wird.
+
+
+OHNE OBERFLÄCHE (für Profis)
+----------------------------
+Wexxxla.exe --cli "C:\Pfad\datei.pdf" docx "C:\Zielordner"
+
+
+PROBLEME?
+---------
+- Fehlerprotokoll: %APPDATA%\Wexxxla\log.txt
+- Gescannte PDFs (nur Bilder, kein Text) werden als Bilder übernommen –
+  Texterkennung (OCR) ist nicht eingebaut.
+- Ist eine Schriftart aus der PDF auf deinem PC nicht installiert, ersetzt Office sie
+  durch eine ähnliche; dann können Zeilenumbrüche leicht abweichen.
+- Passwortgeschützte PDFs müssen vorher entsperrt werden.

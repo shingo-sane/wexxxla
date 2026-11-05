@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wexxxla</title>
+<style>
+:root{
+  --paper:#EEF1F5; --sheet:#FFFFFF; --ink:#18202E; --muted:#5B6577; --line:#D5DBE5;
+  --cobalt:#2843B8; --cobalt-ink:#FFFFFF; --marker:#F5C518; --marker-ink:#18202E;
+  --ok:#1F8A5B; --err:#B8312F; --track:#E2E7EF; --badge-ink:#FFFFFF;
+  --c-pdf:#B8312F; --c-doc:#2843B8; --c-ppt:#C25418; --c-xls:#1F7A4F;
+  --c-img:#7A3FB8; --c-aud:#B02F74; --c-vid:#0E7383;
+  --display:"Bahnschrift","DIN Alternate","Barlow","Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;
+  --text:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#131821; --sheet:#1B222E; --ink:#E7EBF2; --muted:#98A2B4; --line:#2C3646;
+    --cobalt:#7C93FF; --cobalt-ink:#0E1320; --marker:#E8B90F; --marker-ink:#131821;
+    --ok:#4CC08A; --err:#FF7B72; --track:#2A3342; --badge-ink:#131821;
+    --c-pdf:#FF7B72; --c-doc:#8EA2FF; --c-ppt:#FF9D5C; --c-xls:#5BD49A;
+    --c-img:#C49BFF; --c-aud:#FF85C2; --c-vid:#4FD0E0;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 var(--text);
+  display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
+
+/* Kopfzeile */
+header{display:flex;align-items:center;gap:20px;padding:14px 28px;border-bottom:1px solid var(--line)}
+.brand{font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:.01em;
+  display:flex;align-items:center;gap:10px}
+.brand svg{flex:none}
+.ver{font-family:var(--text);font-weight:400;font-size:13px;color:var(--muted);margin-left:2px}
+.engines{margin-left:auto;display:flex;gap:16px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.engine{display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.engine.on .dot{background:var(--ok)}
+.engine button{background:none;border:0;padding:0;color:var(--cobalt);cursor:pointer;text-decoration:underline}
+
+/* Hauptbereich */
+main{flex:1;display:grid;grid-template-columns:minmax(330px,420px) 1fr;min-height:0}
+.col{min-height:0;display:flex;flex-direction:column}
+.files{border-right:1px solid var(--line);padding:22px 22px 0}
+.targets{padding:22px 28px 0;overflow:auto}
+h2{font-family:var(--display);font-weight:600;font-size:22px;margin:0 0 14px;letter-spacing:.005em}
+h2 small{font-family:var(--text);font-weight:400;font-size:14px;color:var(--muted);margin-left:8px}
+
+/* Ablagefläche */
+.drop{border:2px dashed var(--line);border-radius:14px;background:var(--sheet);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding:28px 18px;transition:border-color .15s,background .15s}
+.drop:hover{border-color:var(--cobalt)}
+.drop.big{flex:1;margin-bottom:22px}
+.drop.small{flex-direction:row;gap:10px;padding:12px;margin-bottom:12px}
+.drop strong{font-family:var(--display);font-weight:600;font-size:19px}
+.drop.small strong{font-size:15px}
+.drop p{margin:6px 0 0;color:var(--muted);font-size:14px;max-width:30ch}
+.drop.small p{display:none}
+body.dragging .drop{border-color:var(--cobalt);background:color-mix(in srgb,var(--cobalt) 8%,var(--sheet))}
+.stack{display:flex;gap:6px;margin-bottom:14px}
+.drop.small .stack{display:none}
+.stack span{font-family:var(--display);font-weight:600;font-size:11px;color:var(--badge-ink);padding:3px 6px;border-radius:4px}
+
+/* Dateiliste */
+.list{list-style:none;margin:0;padding:0 2px 16px;overflow:auto;flex:1}
+.file{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:center;
+  background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.badge{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.02em;color:var(--badge-ink);
+  width:46px;height:46px;border-radius:8px;display:flex;align-items:center;justify-content:center;grid-row:span 2}
+.fname{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.fmeta{font-size:13px;color:var(--muted);min-width:0;grid-column:2}
+.fmeta.err{color:var(--err)}
+.fmeta.ok{color:var(--ok)}
+.x{grid-row:span 2;align-self:start;background:none;border:0;width:28px;height:28px;border-radius:6px;
+  color:var(--muted);cursor:pointer;font-size:18px;line-height:1}
+.x:hover{background:var(--track);color:var(--ink)}
+.bar{grid-column:2;height:4px;background:var(--track);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--cobalt);width:0;transition:width .3s}
+.actions{grid-column:2 / span 2;display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.actions button{border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:3px 10px;
+  font-size:13px;cursor:pointer}
+.actions button:hover{border-color:var(--cobalt);color:var(--cobalt)}
+.listfoot{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);
+  padding:0 2px 14px}
+.link{background:none;border:0;color:var(--cobalt);cursor:pointer;padding:0;font-size:13px}
+
+/* Formatkacheln */
+.empty-hint{color:var(--muted);max-width:52ch;margin-top:4px}
+.group{margin-bottom:20px}
+.group h3{font-size:14px;font-weight:600;color:var(--muted);margin:0 0 8px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+.tile{position:relative;text-align:left;background:var(--sheet);border:1px solid var(--line);border-radius:8px;
+  padding:10px 12px 9px;cursor:pointer;min-height:66px;display:flex;flex-direction:column;justify-content:space-between}
+.tile .ext{font-family:var(--display);font-weight:700;font-size:21px;line-height:1.1;letter-spacing:.01em}
+.tile .name{font-size:12px;color:var(--muted);line-height:1.3}
+.tile::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;
+  background:var(--cat)}
+.tile:hover{border-color:var(--cat)}
+.tile.sel{background:var(--marker);border-color:var(--marker);color:var(--marker-ink)}
+.tile.sel .name{color:var(--marker-ink);opacity:.8}
+.tile:disabled{cursor:not-allowed;opacity:.45}
+.tile:disabled:hover{border-color:var(--line)}
+
+/* Leiste unten */
+.dock{position:sticky;bottom:0;background:var(--paper);border-top:1px solid var(--line);margin:8px -28px 0;
+  padding:14px 28px 18px}
+.dockrow{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.outdir{flex:1;min-width:240px;display:flex;align-items:center;gap:8px;font-size:14px}
+.outdir .path{background:var(--sheet);border:1px solid var(--line);border-radius:6px;padding:6px 10px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;direction:rtl;text-align:left}
+.btn{border:1px solid var(--line);background:var(--sheet);border-radius:8px;padding:7px 12px;cursor:pointer;
+  font-size:14px;white-space:nowrap}
+.btn:hover{border-color:var(--cobalt)}
+.go{background:var(--cobalt);color:var(--cobalt-ink);border:0;border-radius:10px;padding:13px 26px;
+  font-family:var(--display);font-weight:600;font-size:18px;cursor:pointer;min-width:220px}
+.go:disabled{background:var(--track);color:var(--muted);cursor:not-allowed}
+.route{font-size:13px;color:var(--muted);margin-top:8px;min-height:20px}
+.merge{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:10px}
+
+/* Einstellungen */
+details{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--sheet)}
+summary{cursor:pointer;padding:10px 14px;font-weight:600;font-size:14px}
+.settings{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px 22px;padding:4px 14px 16px}
+.settings label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.settings select,.settings input[type=range]{color:var(--ink)}
+.settings select{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+.settings .check{flex-direction:row;align-items:center;gap:8px;color:var(--ink);font-size:14px}
+
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink);color:var(--paper);
+  padding:10px 18px;border-radius:8px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+
+@media (max-width:820px){
+  main{grid-template-columns:1fr}
+  .files{border-right:0;border-bottom:1px solid var(--line);padding:16px}
+  .drop.big{min-height:200px}
+  .targets{padding:16px}
+  .dock{margin:8px -16px 0;padding:14px 16px;position:static}
+  header{padding:12px 16px}
+  .engines{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+      <rect x="1" y="3" width="13" height="17" rx="2" fill="var(--c-pdf)"/>
+      <rect x="12" y="6" width="13" height="17" rx="2" fill="var(--cobalt)"/>
+      <path d="M15 14.5h6m-2.5-2.5 2.5 2.5-2.5 2.5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Wexxxla <span class="ver" id="ver"></span>
+  </div>
+  <div class="engines" id="engines"></div>
+</header>
+
+<main>
+  <section class="col files" aria-label="Dateien">
+    <h2>Dateien <small id="count"></small></h2>
+    <div class="drop big" id="drop" tabindex="0" role="button" aria-label="Dateien auswählen">
+      <div class="stack" aria-hidden="true">
+        <span style="background:var(--c-pdf)">PDF</span><span style="background:var(--c-doc)">DOCX</span>
+        <span style="background:var(--c-ppt)">PPTX</span><span style="background:var(--c-xls)">XLSX</span>
+        <span style="background:var(--c-img)">JPG</span><span style="background:var(--c-vid)">MP4</span>
+      </div>
+      <strong id="dropTitle">Dateien hierher ziehen</strong>
+      <p>oder klicken, um Dateien auszuwählen. Mehrere Dateien gleichzeitig sind möglich.</p>
+    </div>
+    <input type="file" id="picker" multiple hidden>
+    <ul class="list" id="list"></ul>
+    <div class="listfoot" id="listfoot" hidden>
+      <span id="summary"></span>
+      <button class="link" id="clear">Liste leeren</button>
+    </div>
+  </section>
+
+  <section class="col targets" aria-label="Zielformat">
+    <h2>Umwandeln in</h2>
+    <div id="tiles"><p class="empty-hint">Füge links Dateien hinzu. Danach siehst du hier alle Formate, in die sie sich umwandeln lassen.</p></div>
+
+    <div class="dock">
+      <div class="dockrow">
+        <div class="outdir">
+          <span>Speichern in</span>
+          <span class="path" title="" id="outdirWrap"><bdi id="outdir"></bdi></span>
+          <button class="btn" id="pick">Ändern</button>
+          <button class="btn" id="openout">Öffnen</button>
+        </div>
+        <button class="go" id="go" disabled>Umwandeln</button>
+      </div>
+      <label class="merge" id="mergeRow" hidden><input type="checkbox" id="merge"> Alle Dateien zu einer einzigen PDF zusammenfügen</label>
+      <div class="route" id="route"></div>
+      <details>
+        <summary>Einstellungen</summary>
+        <div class="settings">
+          <label>PDF → PowerPoint
+            <select data-opt="pdf_ppt_mode">
+              <option value="editable">Bearbeitbar: Text, Tabellen, Formen und Bilder einzeln</option>
+              <option value="image">Nur Bilder: jede Seite als Bild (nicht bearbeitbar)</option>
+            </select>
+          </label>
+          <label>PDF → Word
+            <select data-opt="pdf_word_mode">
+              <option value="auto">Layout-Erkennung (Schriften, Tabellen, Grafiken)</option>
+            </select>
+          </label>
+          <label>Auflösung beim Umwandeln von PDF-Seiten in Bilder
+            <select data-opt="pdf_dpi">
+              <option value="100">100 dpi (klein)</option>
+              <option value="150">150 dpi (Standard)</option>
+              <option value="200">200 dpi (scharf)</option>
+              <option value="300">300 dpi (Druck)</option>
+            </select>
+          </label>
+          <label>Bildqualität (JPG, WebP): <span id="qv"></span>
+            <input type="range" min="40" max="100" step="5" data-opt="image_quality">
+          </label>
+          <label>Trennzeichen für CSV-Dateien
+            <select data-opt="csv_sep">
+              <option value=";">Semikolon ; (Excel Deutschland/Österreich)</option>
+              <option value=",">Komma ,</option>
+              <option value="tab">Tabulator</option>
+            </select>
+          </label>
+          <label>Videoqualität
+            <select data-opt="video_quality">
+              <option value="hoch">Hoch (große Datei)</option>
+              <option value="normal">Normal</option>
+              <option value="klein">Klein (kleine Datei)</option>
+            </select>
+          </label>
+          <label>Office-Programm für Word, Excel und PowerPoint
+            <select id="officeEngine">
+              <option value="auto">Automatisch (Microsoft Office, sonst LibreOffice)</option>
+              <option value="ms">Nur Microsoft Office</option>
+              <option value="lo">Nur LibreOffice</option>
+            </select>
+          </label>
+          <label class="check"><input type="checkbox" data-opt="ppt_word_images" data-bool> PowerPoint → Word: Folien als Bild einfügen</label>
+        </div>
+      </details>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const CAT_COLOR = {"PDF":"var(--c-pdf)","Dokument":"var(--c-doc)","Präsentation":"var(--c-ppt)",
+  "Tabelle":"var(--c-xls)","Bild":"var(--c-img)","Audio":"var(--c-aud)","Video":"var(--c-vid)"};
+const CAT_TITLE = {"PDF":"PDF","Dokument":"Dokumente","Präsentation":"Präsentationen","Tabelle":"Tabellen",
+  "Bild":"Bilder","Audio":"Audio","Video":"Video"};
+let INFO = null, files = [], target = null, busy = false;
+const $ = s => document.querySelector(s);
+
+async function api(path, body){
+  const r = await fetch(path, {method: body === undefined ? "GET" : "POST",
+    headers: {"Content-Type":"application/json"}, body: body === undefined ? undefined : JSON.stringify(body)});
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || ("Fehler " + r.status));
+  return j;
+}
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"), 3200); }
+function fmtSize(n){ if(n<1024) return n+" B"; if(n<1048576) return (n/1024).toFixed(0)+" KB";
+  if(n<1073741824) return (n/1048576).toFixed(1).replace(".",",")+" MB"; return (n/1073741824).toFixed(2).replace(".",",")+" GB"; }
+function catOf(ext){ return INFO.formats[ext] ? INFO.formats[ext].cat : null; }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+/* ---------- Start ---------- */
+async function init(){
+  INFO = await api("/api/info");
+  $("#ver").textContent = INFO.version_name || "";
+  const t = INFO.tools, ms = t.msoffice.length;
+  const office = ms ? "Microsoft Office" : "LibreOffice";
+  $("#engines").innerHTML = [
+    [ms || t.libreoffice, ms ? "Microsoft Office" : (t.libreoffice ? "LibreOffice" : "Kein Office-Programm")],
+    [t.ffmpeg, "Audio & Video"], [t.pandoc, "E-Book & Markdown"]
+  ].map(([on,l]) => `<span class="engine ${on?"on":""}"><span class="dot"></span>${l}</span>`).join("")
+   + (!ms && !t.libreoffice ? `<span class="engine"><button id="getLO">LibreOffice kostenlos holen</button></span>` : "");
+  const lo = $("#getLO"); if (lo) lo.onclick = () => api("/api/open-url", {url:"https://de.libreoffice.org/download/download/"});
+  applySettings(INFO.settings);
+  render();
+}
+function applySettings(s){
+  $("#outdir").textContent = s.out_dir; $("#outdirWrap").title = s.out_dir;
+  document.querySelectorAll("[data-opt]").forEach(el => {
+    const v = s.options[el.dataset.opt];
+    if (el.type === "checkbox") el.checked = String(v) !== "0";
+    else if (v !== undefined) el.value = v;
+  });
+  $("#qv").textContent = s.options.image_quality;
+  $("#officeEngine").value = s.office_engine || "auto";
+}
+document.querySelectorAll("[data-opt]").forEach(el => el.addEventListener("change", async () => {
+  const v = el.type === "checkbox" ? (el.checked ? "1" : "0") : el.value;
+  if (el.dataset.opt === "image_quality") $("#qv").textContent = v;
+  const r = await api("/api/settings", {options: {[el.dataset.opt]: v}}); INFO.settings = r.settings;
+}));
+$("[data-opt=image_quality]").addEventListener("input", e => $("#qv").textContent = e.target.value);
+$("#officeEngine").onchange = async e => {
+  const r = await api("/api/settings", {office_engine: e.target.value}); INFO.settings = r.settings;
+  const fr = await api("/api/refresh", {ids: files.map(f => f.id)});
+  fr.files.forEach(n => Object.assign(files.find(f => f.id === n.id), {targets:n.targets, unavailable:n.unavailable}));
+  render();
+};
+
+/* ---------- Dateien hinzufügen ---------- */
+const drop = $("#drop"), picker = $("#picker");
+drop.onclick = () => picker.click();
+drop.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); picker.click(); } };
+picker.onchange = () => { addFiles([...picker.files]); picker.value = ""; };
+let dragDepth = 0;
+window.addEventListener("dragenter", e => { e.preventDefault(); dragDepth++; document.body.classList.add("dragging"); });
+window.addEventListener("dragleave", () => { if (--dragDepth <= 0) { dragDepth = 0; document.body.classList.remove("dragging"); } });
+window.addEventListener("dragover", e => e.preventDefault());
+window.addEventListener("drop", e => { e.preventDefault(); dragDepth = 0; document.body.classList.remove("dragging");
+  const list = [...(e.dataTransfer.files || [])].filter(f => f.size > 0 || f.type); if (list.length) addFiles(list); });
+
+function addFiles(list){
+  for (const f of list){
+    const ext = (f.name.includes(".") ? f.name.split(".").pop() : "").toLowerCase();
+    const item = {tmp: Math.random().toString(36).slice(2), name: f.name, ext, size: f.size, uploading: true,
+      progress: 0, state: "uploading", targets: [], unavailable: {}, outputs: []};
+    files.push(item);
+    upload(f, item);
+  }
+  render();
+}
+function upload(f, item){
+  const xhr = new XMLHttpRequest();
+  xhr.open("POST", "/api/upload?name=" + encodeURIComponent(f.name));
+  xhr.upload.onprogress = e => { if (e.lengthComputable) { item.progress = e.loaded / e.total; renderList(); } };
+  xhr.onload = () => {
+    if (xhr.status !== 200) { item.state = "error"; item.error = "Hochladen fehlgeschlagen"; render(); return; }
+    Object.assign(item, JSON.parse(xhr.responseText), {uploading: false, progress: 0,
+      state: "ready"});
+    if (!item.supported) { item.state = "error"; item.error = "Dieses Format wird nicht unterstützt."; }
+    render();
+  };
+  xhr.onerror = () => { item.state = "error"; item.error = "Hochladen fehlgeschlagen"; render(); };
+  xhr.send(f);
+}
+async function removeFile(item){
+  files = files.filter(f => f !== item);
+  if (item.id) api("/api/remove", {id: item.id}).catch(()=>{});
+  render();
+}
+$("#clear").onclick = () => { if (busy) return; [...files].forEach(removeFile); target = null; render(); };
+
+/* ---------- Darstellung ---------- */
+function render(){ renderList(); renderTiles(); renderDock(); }
+
+function renderList(){
+  const has = files.length > 0;
+  drop.className = "drop " + (has ? "small" : "big");
+  $("#dropTitle").textContent = has ? "Weitere Dateien hinzufügen" : "Dateien hierher ziehen";
+  $("#count").textContent = has ? files.length + (files.length === 1 ? " Datei" : " Dateien") : "";
+  $("#listfoot").hidden = !has;
+  const done = files.filter(f => f.state === "done").length;
+  $("#summary").textContent = done ? `${done} von ${files.length} umgewandelt` : "";
+  $("#list").innerHTML = files.map((f, i) => {
+    const shownExt = f.state === "done" && f.outputs && f.outputs[0] && !f.outputs[0].isdir
+      ? f.outputs[0].name.split(".").pop().toLowerCase() : f.ext;
+    const cat = INFO && catOf(shownExt);
+    const color = CAT_COLOR[cat] || "var(--muted)";
+    let meta = fmtSize(f.size), cls = "";
+    if (f.state === "uploading") meta = "Wird geladen …";
+    if (f.state === "waiting") meta = "Wartet …";
+    if (f.state === "running") meta = f.msg || "Wird umgewandelt …";
+    if (f.state === "done") { meta = "✓ " + (f.msg || "Fertig"); cls = "ok"; }
+    if (f.state === "error") { meta = f.error || "Fehler"; cls = "err"; }
+    const showBar = f.state === "uploading" || f.state === "running";
+    const acts = f.state === "done" ? (f.outputs || []).map((o, k) =>
+      `<div class="actions">
+         ${o.isdir ? "" : `<button data-act="open" data-i="${i}" data-k="${k}">Öffnen</button>`}
+         <button data-act="reveal" data-i="${i}" data-k="${k}">Im Ordner zeigen</button>
+         <button data-act="save" data-i="${i}" data-k="${k}">${o.isdir ? "Als ZIP speichern" : "Kopie speichern"}</button>
+       </div>`).join("") : "";
+    return `<li class="file">
+      <span class="badge" style="background:${color}">${esc((shownExt || "?").toUpperCase().slice(0,5))}</span>
+      <span class="fname" title="${esc(f.name)}">${esc(f.state === "done" && f.outputs && f.outputs[0] ? f.outputs[0].name : f.name)}</span>
+      <button class="x" data-act="rm" data-i="${i}" aria-label="${esc(f.name)} entfernen" ${busy ? "disabled" : ""}>×</button>
+      ${showBar ? `<span class="bar"><i style="width:${Math.round((f.progress||0)*100)}%"></i></span>` :
+        `<span class="fmeta ${cls}">${esc(meta)}</span>`}
+      ${acts}
+    </li>`;
+  }).join("");
+}
+$("#list").onclick = async e => {
+  const b = e.target.closest("button[data-act]"); if (!b) return;
+  const f = files[+b.dataset.i]; if (!f) return;
+  if (b.dataset.act === "rm") return removeFile(f);
+  const o = f.outputs[+b.dataset.k];
+  try {
+    if (b.dataset.act === "open") await api("/api/open", {path: o.path, what: "open"});
+    if (b.dataset.act === "reveal") await api("/api/open", {path: o.path, what: "reveal"});
+    if (b.dataset.act === "save") { const a = document.createElement("a");
+      a.href = "/api/download?path=" + encodeURIComponent(o.path); a.download = ""; a.click(); }
+  } catch (err) { toast(err.message); }
+};
+
+function usable(){ return files.filter(f => f.id && f.supported && f.state !== "uploading"); }
+function commonTargets(){
+  const u = usable(); if (!u.length) return {ok: [], na: {}};
+  let ok = new Set(u[0].targets);
+  u.slice(1).forEach(f => { ok = new Set(f.targets.filter(t => ok.has(t))); });
+  const na = {};
+  u.forEach(f => Object.entries(f.unavailable || {}).forEach(([k, v]) => { if (!ok.has(k)) na[k] = v; }));
+  return {ok: [...ok], na};
+}
+function renderTiles(){
+  const box = $("#tiles");
+  if (!INFO) return;
+  const u = usable();
+  if (!u.length) {
+    box.innerHTML = files.length ? `<p class="empty-hint">${files.some(f => f.state === "uploading") ?
+      "Dateien werden geladen …" : "Diese Dateien werden nicht unterstützt."}</p>` :
+      `<p class="empty-hint">Füge links Dateien hinzu. Danach siehst du hier alle Formate, in die sie sich umwandeln lassen.</p>`;
+    target = null; return;
+  }
+  const {ok, na} = commonTargets();
+  if (target && !ok.includes(target)) target = null;
+  if (!ok.length && !Object.keys(na).length) {
+    box.innerHTML = `<p class="empty-hint">Für diese Mischung gibt es kein gemeinsames Zielformat. Wandle die Dateien getrennt um, zum Beispiel erst alle Bilder, dann alle Videos.</p>`;
+    return;
+  }
+  const srcExts = new Set(u.map(f => f.ext));
+  box.innerHTML = INFO.categories.map(cat => {
+    const fmts = Object.keys(INFO.formats).filter(k => INFO.formats[k].cat === cat && (ok.includes(k) || na[k]) && !(srcExts.size === 1 && srcExts.has(k)));
+    if (!fmts.length) return "";
+    return `<div class="group"><h3>${CAT_TITLE[cat]}</h3><div class="tiles">` + fmts.map(k => {
+      const off = !ok.includes(k);
+      const label = INFO.formats[k].label.replace(/\s*\(\.[a-z]+\)$/, "");
+      return `<button class="tile ${target === k ? "sel" : ""}" data-fmt="${k}" style="--cat:${CAT_COLOR[cat]}"
+        ${off ? `disabled title="${esc(na[k])}"` : ""} aria-pressed="${target === k}">
+        <span class="ext">${k.toUpperCase()}</span><span class="name">${esc(off ? na[k] : label)}</span></button>`;
+    }).join("") + `</div></div>`;
+  }).join("");
+}
+$("#tiles").onclick = e => {
+  const t = e.target.closest(".tile"); if (!t || t.disabled || busy) return;
+  target = t.dataset.fmt; render(); showRoute();
+};
+async function showRoute(){
+  const u = usable(), exts = [...new Set(u.map(f => f.ext))];
+  if (!target || exts.length !== 1) { $("#route").textContent = ""; return; }
+  try { const r = await api("/api/route", {src: exts[0], dst: target});
+    $("#route").textContent = r.route.includes("→", r.route.indexOf("→") + 1) ? "Weg: " + r.route : "";
+  } catch { $("#route").textContent = ""; }
+}
+function renderDock(){
+  const u = usable();
+  const go = $("#go");
+  go.disabled = busy || !target || !u.length;
+  go.textContent = busy ? "Wird umgewandelt …" : target ? `In ${target.toUpperCase()} umwandeln` : "Umwandeln";
+  const mergeOk = target === "pdf" && u.length > 1;
+  $("#mergeRow").hidden = !mergeOk;
+  if (!mergeOk) $("#merge").checked = false;
+  if (!target) $("#route").textContent = "";
+}
+
+/* ---------- Ordner ---------- */
+$("#pick").onclick = async () => { try { const r = await api("/api/pick-folder", {});
+  INFO.settings.out_dir = r.out_dir; applySettings(INFO.settings); } catch (e) { toast(e.message); } };
+$("#openout").onclick = () => api("/api/open", {what: "outdir"}).catch(e => toast(e.message));
+
+/* ---------- Umwandeln ---------- */
+$("#go").onclick = async () => {
+  const u = usable(); if (!u.length || !target) return;
+  busy = true; u.forEach(f => Object.assign(f, {state: "waiting", progress: 0, outputs: [], error: ""}));
+  render();
+  try {
+    const {job} = await api("/api/convert", {ids: u.map(f => f.id), target, merge: $("#merge").checked});
+    await poll(job);
+  } catch (e) { toast(e.message); }
+  busy = false; render();
+  const ok = u.filter(f => f.state === "done").length, bad = u.length - ok;
+  toast(bad ? `${ok} umgewandelt, ${bad} fehlgeschlagen` : (ok === 1 ? "Datei umgewandelt" : `${ok} Dateien umgewandelt`));
+};
+async function poll(job){
+  for (;;) {
+    const j = await api("/api/job?id=" + job);
+    j.items.forEach(it => { const f = files.find(x => x.id === it.id); if (f) Object.assign(f, {
+      state: it.state, progress: it.progress, msg: it.msg, outputs: it.outputs, error: it.error}); });
+    renderList();
+    if (j.done) return;
+    await new Promise(r => setTimeout(r, 400));
+  }
+}
+
+/* ---------- Lebenszeichen an den Server ---------- */
+setInterval(() => fetch("/api/ping", {method: "POST"}).catch(()=>{}), 5000);
+fetch("/api/ping", {method: "POST"}).catch(()=>{});
+window.addEventListener("pagehide", () => navigator.sendBeacon("/api/bye"));
+
+init().catch(e => { document.body.innerHTML = "<p style='padding:2rem'>Fehler beim Start: " + esc(e.message) + "</p>"; });
+</script>
+</body>
+</html>
