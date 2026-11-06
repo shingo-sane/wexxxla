@@ -1,4 +1,4 @@
-WEXXXLA – Oida 1.0
+WEXXXLA – Oida 1.1
 ==================
 
 Wandelt Dateien per Drag & Drop um – alles lokal auf deinem PC, nichts wird ins Internet hochgeladen.

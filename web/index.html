@@ -1,150 +1,152 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de-AT">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Wexxxla</title>
 <style>
+@font-face{font-family:"Big Shoulders Display";font-weight:700;src:url(fonts/big-shoulders-display-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Big Shoulders Display";font-weight:900;src:url(fonts/big-shoulders-display-latin-900-normal.woff2) format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-weight:400;src:url(fonts/atkinson-hyperlegible-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-weight:700;src:url(fonts/atkinson-hyperlegible-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-weight:400;font-style:italic;src:url(fonts/atkinson-hyperlegible-latin-400-italic.woff2) format("woff2")}
 :root{
-  --paper:#EEF1F5; --sheet:#FFFFFF; --ink:#18202E; --muted:#5B6577; --line:#D5DBE5;
-  --cobalt:#2843B8; --cobalt-ink:#FFFFFF; --marker:#F5C518; --marker-ink:#18202E;
-  --ok:#1F8A5B; --err:#B8312F; --track:#E2E7EF; --badge-ink:#FFFFFF;
-  --c-pdf:#B8312F; --c-doc:#2843B8; --c-ppt:#C25418; --c-xls:#1F7A4F;
+  /* gleiche Farben wie die Website: Würstelstand */
+  --rot:#C8102E; --senf:#F3C300; --senf-schatten:#A88600; --tafel:#1D1D1B; --tafel-rand:#2E2E2B;
+  --tafel-linie:#4A4A45; --kreide:#F4F4F0; --kreide-grau:#B9BAB2;
+  --blech:#E4E8E3; --papier:#FFFFFF; --tinte:#1D1D1B; --grau:#55574F; --linie:#D3D7D1;
+  --blau:#2843B8; --gruen:#1F7A4F; --fehler:#B3122B;
+  --c-pdf:#C8102E; --c-doc:#2843B8; --c-ppt:#D2541C; --c-xls:#1F7A4F;
   --c-img:#7A3FB8; --c-aud:#B02F74; --c-vid:#0E7383;
-  --display:"Bahnschrift","DIN Alternate","Barlow","Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;
-  --text:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --sign:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --text:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
   color-scheme:light;
-}
-@media (prefers-color-scheme:dark){
-  :root{
-    --paper:#131821; --sheet:#1B222E; --ink:#E7EBF2; --muted:#98A2B4; --line:#2C3646;
-    --cobalt:#7C93FF; --cobalt-ink:#0E1320; --marker:#E8B90F; --marker-ink:#131821;
-    --ok:#4CC08A; --err:#FF7B72; --track:#2A3342; --badge-ink:#131821;
-    --c-pdf:#FF7B72; --c-doc:#8EA2FF; --c-ppt:#FF9D5C; --c-xls:#5BD49A;
-    --c-img:#C49BFF; --c-aud:#FF85C2; --c-vid:#4FD0E0;
-    color-scheme:dark;
-  }
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{height:100%}
-body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 var(--text);
+body{margin:0;background:var(--papier);color:var(--tinte);font:15px/1.5 var(--text);
   display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
 button,input,select{font:inherit;color:inherit}
-:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
+:focus-visible{outline:3px solid var(--blau);outline-offset:2px}
+.tafel :focus-visible{outline-color:var(--senf)}
 
-/* Kopfzeile */
-header{display:flex;align-items:center;gap:20px;padding:14px 28px;border-bottom:1px solid var(--line)}
-.brand{font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:.01em;
-  display:flex;align-items:center;gap:10px}
-.brand svg{flex:none}
-.ver{font-family:var(--text);font-weight:400;font-size:13px;color:var(--muted);margin-left:2px}
-.engines{margin-left:auto;display:flex;gap:16px;font-size:13px;color:var(--muted);flex-wrap:wrap}
-.engine{display:flex;align-items:center;gap:6px}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--line)}
-.engine.on .dot{background:var(--ok)}
-.engine button{background:none;border:0;padding:0;color:var(--cobalt);cursor:pointer;text-decoration:underline}
+/* ---------- Kopf (rot wie die Website) ---------- */
+header{display:flex;align-items:center;gap:20px;padding:12px 24px;background:var(--rot);color:#fff}
+.marke{display:flex;align-items:center;gap:10px;font:900 30px/1 var(--sign);letter-spacing:.01em}
+.marke svg{flex:none}
+.ver{font:700 18px/1 var(--sign);text-transform:uppercase;background:rgba(0,0,0,.18);padding:5px 8px 3px;border-radius:3px;letter-spacing:.03em}
+.engines{margin-left:auto;display:flex;gap:18px;font-size:13px;flex-wrap:wrap}
+.engine{display:flex;align-items:center;gap:6px;opacity:.75}
+.engine.on{opacity:1}
+.dot{width:9px;height:9px;border-radius:50%;border:2px solid #fff}
+.engine.on .dot{background:var(--senf);border-color:var(--senf)}
+.engine button{background:none;border:0;padding:0;color:#fff;font-weight:700;cursor:pointer;text-decoration:underline}
 
-/* Hauptbereich */
-main{flex:1;display:grid;grid-template-columns:minmax(330px,420px) 1fr;min-height:0}
+/* ---------- Hauptbereich ---------- */
+main{flex:1;display:grid;grid-template-columns:minmax(330px,410px) 1fr;min-height:0}
 .col{min-height:0;display:flex;flex-direction:column}
-.files{border-right:1px solid var(--line);padding:22px 22px 0}
-.targets{padding:22px 28px 0;overflow:auto}
-h2{font-family:var(--display);font-weight:600;font-size:22px;margin:0 0 14px;letter-spacing:.005em}
-h2 small{font-family:var(--text);font-weight:400;font-size:14px;color:var(--muted);margin-left:8px}
+h2{font:900 34px/1 var(--sign);text-transform:uppercase;margin:0 0 14px}
+h2 small{font:400 14px/1 var(--text);text-transform:none;color:var(--grau);margin-left:8px;vertical-align:middle}
 
-/* Ablagefläche */
-.drop{border:2px dashed var(--line);border-radius:14px;background:var(--sheet);cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
-  padding:28px 18px;transition:border-color .15s,background .15s}
-.drop:hover{border-color:var(--cobalt)}
+/* Linke Seite: Dateien */
+.dateien{padding:22px 22px 0;background:var(--papier)}
+.drop{border:3px dashed #9FA39A;border-radius:6px;background:var(--blech);cursor:pointer;
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:28px 24px;
+  transition:border-color .12s,background .12s}
+.drop:hover{border-color:var(--tinte)}
 .drop.big{flex:1;margin-bottom:22px}
-.drop.small{flex-direction:row;gap:10px;padding:12px;margin-bottom:12px}
-.drop strong{font-family:var(--display);font-weight:600;font-size:19px}
-.drop.small strong{font-size:15px}
-.drop p{margin:6px 0 0;color:var(--muted);font-size:14px;max-width:30ch}
+.drop.small{flex-direction:row;align-items:center;gap:12px;padding:12px 16px;margin-bottom:12px}
+.drop strong{font:900 46px/.92 var(--sign);text-transform:uppercase}
+.drop.small strong{font-size:22px}
+.drop p{margin:14px 0 0;color:var(--grau);font-size:15px;max-width:28ch}
 .drop.small p{display:none}
-body.dragging .drop{border-color:var(--cobalt);background:color-mix(in srgb,var(--cobalt) 8%,var(--sheet))}
-.stack{display:flex;gap:6px;margin-bottom:14px}
-.drop.small .stack{display:none}
-.stack span{font-family:var(--display);font-weight:600;font-size:11px;color:var(--badge-ink);padding:3px 6px;border-radius:4px}
+.drop .plus{display:none;font:900 28px/1 var(--sign);color:var(--rot)}
+.drop.small .plus{display:block}
+body.dragging .drop{border-color:var(--rot);background:#F8E6E9}
 
-/* Dateiliste */
-.list{list-style:none;margin:0;padding:0 2px 16px;overflow:auto;flex:1}
-.file{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:center;
-  background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
-.badge{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.02em;color:var(--badge-ink);
-  width:46px;height:46px;border-radius:8px;display:flex;align-items:center;justify-content:center;grid-row:span 2}
-.fname{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.fmeta{font-size:13px;color:var(--muted);min-width:0;grid-column:2}
-.fmeta.err{color:var(--err)}
-.fmeta.ok{color:var(--ok)}
-.x{grid-row:span 2;align-self:start;background:none;border:0;width:28px;height:28px;border-radius:6px;
-  color:var(--muted);cursor:pointer;font-size:18px;line-height:1}
-.x:hover{background:var(--track);color:var(--ink)}
-.bar{grid-column:2;height:4px;background:var(--track);border-radius:2px;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--cobalt);width:0;transition:width .3s}
-.actions{grid-column:2 / span 2;display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
-.actions button{border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:3px 10px;
-  font-size:13px;cursor:pointer}
-.actions button:hover{border-color:var(--cobalt);color:var(--cobalt)}
-.listfoot{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);
-  padding:0 2px 14px}
-.link{background:none;border:0;color:var(--cobalt);cursor:pointer;padding:0;font-size:13px}
+.list{list-style:none;margin:0;padding:0 2px 12px;overflow:auto;flex:1}
+.file{display:grid;grid-template-columns:auto 1fr auto;gap:2px 12px;align-items:center;
+  background:var(--papier);border:2px solid var(--tinte);border-radius:4px;padding:10px 10px 10px 10px;margin-bottom:8px}
+.badge{font:700 15px/1 var(--sign);letter-spacing:.03em;color:#fff;text-transform:uppercase;
+  width:50px;height:50px;border-radius:3px;display:flex;align-items:center;justify-content:center;grid-row:span 2}
+.fname{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.fmeta{font-size:13px;color:var(--grau);min-width:0;grid-column:2}
+.fmeta.err{color:var(--fehler);font-weight:700}
+.fmeta.ok{color:var(--gruen);font-weight:700}
+.x{grid-row:span 2;align-self:start;background:none;border:0;width:30px;height:30px;border-radius:3px;
+  color:var(--grau);cursor:pointer;font-size:22px;line-height:1}
+.x:hover{background:var(--blech);color:var(--tinte)}
+.bar{grid-column:2;height:6px;background:var(--blech);border-radius:1px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--rot);width:0;transition:width .3s}
+.actions{grid-column:2 / span 2;display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.actions button{border:2px solid var(--tinte);background:var(--papier);border-radius:3px;padding:2px 9px;
+  font-size:13px;font-weight:700;cursor:pointer}
+.actions button:hover{background:var(--senf)}
+.listfoot{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--grau);padding:0 2px 14px}
+.link{background:none;border:0;color:var(--rot);font-weight:700;cursor:pointer;padding:0;font-size:14px;text-decoration:underline}
 
-/* Formatkacheln */
-.empty-hint{color:var(--muted);max-width:52ch;margin-top:4px}
-.group{margin-bottom:20px}
-.group h3{font-size:14px;font-weight:600;color:var(--muted);margin:0 0 8px}
-.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
-.tile{position:relative;text-align:left;background:var(--sheet);border:1px solid var(--line);border-radius:8px;
-  padding:10px 12px 9px;cursor:pointer;min-height:66px;display:flex;flex-direction:column;justify-content:space-between}
-.tile .ext{font-family:var(--display);font-weight:700;font-size:21px;line-height:1.1;letter-spacing:.01em}
-.tile .name{font-size:12px;color:var(--muted);line-height:1.3}
-.tile::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;
-  background:var(--cat)}
-.tile:hover{border-color:var(--cat)}
-.tile.sel{background:var(--marker);border-color:var(--marker);color:var(--marker-ink)}
-.tile.sel .name{color:var(--marker-ink);opacity:.8}
-.tile:disabled{cursor:not-allowed;opacity:.45}
-.tile:disabled:hover{border-color:var(--line)}
+/* Rechte Seite: Bestelltafel */
+.tafel{background:var(--tafel);color:var(--kreide);padding:22px 28px 0;overflow:auto;border-left:10px solid var(--tafel-rand)}
+.tafel h2{color:var(--senf)}
+#tiles{flex:1}
+.leer{font:900 40px/1 var(--sign);text-transform:uppercase;margin:24px 0 12px;color:#fff;max-width:14em}
+.leer-text{color:var(--kreide-grau);max-width:40ch;margin:0}
+.group{margin-bottom:18px}
+.group h3{font-size:14px;font-weight:400;color:var(--kreide-grau);margin:0 0 7px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:7px}
+.tile{text-align:left;background:transparent;color:var(--kreide);border:2px solid var(--tafel-linie);border-radius:3px;
+  padding:9px 10px 7px;cursor:pointer;min-height:62px;display:flex;flex-direction:column;justify-content:space-between;
+  border-left:5px solid var(--cat)}
+.tile .ext{font:700 25px/1 var(--sign);letter-spacing:.03em;text-transform:uppercase}
+.tile .name{font-size:12px;color:var(--kreide-grau);line-height:1.25;margin-top:4px}
+.tile:hover{border-color:var(--kreide);border-left-color:var(--cat)}
+.tile.sel{background:var(--senf);border-color:var(--senf);color:var(--tinte)}
+.tile.sel .name{color:var(--tinte)}
+.tile:disabled{cursor:not-allowed;opacity:.4}
+.tile:disabled:hover{border-color:var(--tafel-linie);border-left-color:var(--cat)}
 
-/* Leiste unten */
-.dock{position:sticky;bottom:0;background:var(--paper);border-top:1px solid var(--line);margin:8px -28px 0;
-  padding:14px 28px 18px}
-.dockrow{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-.outdir{flex:1;min-width:240px;display:flex;align-items:center;gap:8px;font-size:14px}
-.outdir .path{background:var(--sheet);border:1px solid var(--line);border-radius:6px;padding:6px 10px;
+.dock{position:sticky;bottom:0;background:var(--tafel);border-top:2px dashed var(--tafel-linie);margin:10px -28px 0;
+  padding:16px 28px 18px}
+.dockrow{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.outdir{flex:1;min-width:240px;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--kreide-grau)}
+.outdir .path{background:#2A2A27;color:var(--kreide);border:2px solid var(--tafel-linie);border-radius:3px;padding:5px 10px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;direction:rtl;text-align:left}
-.btn{border:1px solid var(--line);background:var(--sheet);border-radius:8px;padding:7px 12px;cursor:pointer;
-  font-size:14px;white-space:nowrap}
-.btn:hover{border-color:var(--cobalt)}
-.go{background:var(--cobalt);color:var(--cobalt-ink);border:0;border-radius:10px;padding:13px 26px;
-  font-family:var(--display);font-weight:600;font-size:18px;cursor:pointer;min-width:220px}
-.go:disabled{background:var(--track);color:var(--muted);cursor:not-allowed}
-.route{font-size:13px;color:var(--muted);margin-top:8px;min-height:20px}
-.merge{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:10px}
+.btn{border:2px solid var(--tafel-linie);background:transparent;color:var(--kreide);border-radius:3px;padding:5px 12px;
+  cursor:pointer;font-size:14px;font-weight:700;white-space:nowrap}
+.btn:hover{border-color:var(--kreide)}
+.go{background:var(--senf);color:var(--tinte);border:0;border-radius:4px;padding:15px 26px 12px;min-width:250px;
+  font:900 27px/1 var(--sign);text-transform:uppercase;cursor:pointer;box-shadow:0 5px 0 var(--senf-schatten);
+  transition:transform .08s,box-shadow .08s}
+.go:hover{background:#FFD21F}
+.go:active{transform:translateY(4px);box-shadow:0 1px 0 var(--senf-schatten)}
+.go:disabled{background:#3A3A36;color:#8C8D86;box-shadow:0 5px 0 #2A2A27;cursor:not-allowed;transform:none}
+.route{font-size:13px;color:var(--kreide-grau);margin-top:10px;min-height:20px}
+.merge{display:flex;align-items:center;gap:8px;font-size:15px;margin-top:12px;color:var(--kreide)}
+.merge input{width:18px;height:18px;accent-color:var(--senf)}
 
-/* Einstellungen */
-details{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--sheet)}
-summary{cursor:pointer;padding:10px 14px;font-weight:600;font-size:14px}
-.settings{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px 22px;padding:4px 14px 16px}
-.settings label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
-.settings select,.settings input[type=range]{color:var(--ink)}
-.settings select{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
-.settings .check{flex-direction:row;align-items:center;gap:8px;color:var(--ink);font-size:14px}
+details{margin-top:10px;border:2px solid var(--tafel-linie);border-radius:3px}
+summary{cursor:pointer;padding:9px 14px;font:700 20px/1 var(--sign);text-transform:uppercase;letter-spacing:.03em}
+.settings{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px 22px;padding:6px 14px 16px}
+.settings label{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--kreide-grau)}
+.settings select{background:#2A2A27;color:var(--kreide);border:2px solid var(--tafel-linie);border-radius:3px;padding:5px 8px}
+.settings input[type=range]{accent-color:var(--senf)}
+.settings .check{flex-direction:row;align-items:center;gap:8px;color:var(--kreide);font-size:14px}
+.settings .check input{accent-color:var(--senf);width:16px;height:16px}
 
-.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink);color:var(--paper);
-  padding:10px 18px;border-radius:8px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--senf);color:var(--tinte);
+  padding:12px 20px 10px;border-radius:4px;font:900 22px/1.1 var(--sign);text-transform:uppercase;letter-spacing:.02em;
+  box-shadow:0 4px 0 var(--senf-schatten);opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.bad{background:var(--rot);color:#fff;box-shadow:0 4px 0 #7A0A1C}
 .toast.show{opacity:1}
 
 @media (max-width:820px){
   main{grid-template-columns:1fr}
-  .files{border-right:0;border-bottom:1px solid var(--line);padding:16px}
+  .dateien{padding:16px}
   .drop.big{min-height:200px}
-  .targets{padding:16px}
+  .tafel{padding:16px;border-left:0;border-top:8px solid var(--tafel-rand)}
   .dock{margin:8px -16px 0;padding:14px 16px;position:static}
-  header{padding:12px 16px}
+  header{padding:10px 16px}
   .engines{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -152,10 +154,10 @@ summary{cursor:pointer;padding:10px 14px;font-weight:600;font-size:14px}
 </head>
 <body>
 <header>
-  <div class="brand">
-    <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
-      <rect x="1" y="3" width="13" height="17" rx="2" fill="var(--c-pdf)"/>
-      <rect x="12" y="6" width="13" height="17" rx="2" fill="var(--cobalt)"/>
+  <div class="marke">
+    <svg width="30" height="30" viewBox="0 0 26 26" aria-hidden="true">
+      <rect x="1" y="3" width="13" height="17" rx="2" fill="#fff"/>
+      <rect x="12" y="6" width="13" height="17" rx="2" fill="#2843B8"/>
       <path d="M15 14.5h6m-2.5-2.5 2.5 2.5-2.5 2.5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
     Wexxxla <span class="ver" id="ver"></span>
@@ -164,40 +166,36 @@ summary{cursor:pointer;padding:10px 14px;font-weight:600;font-size:14px}
 </header>
 
 <main>
-  <section class="col files" aria-label="Dateien">
-    <h2>Dateien <small id="count"></small></h2>
+  <section class="col dateien" aria-label="Deine Dateien">
+    <h2>Deine Dateien <small id="count"></small></h2>
     <div class="drop big" id="drop" tabindex="0" role="button" aria-label="Dateien auswählen">
-      <div class="stack" aria-hidden="true">
-        <span style="background:var(--c-pdf)">PDF</span><span style="background:var(--c-doc)">DOCX</span>
-        <span style="background:var(--c-ppt)">PPTX</span><span style="background:var(--c-xls)">XLSX</span>
-        <span style="background:var(--c-img)">JPG</span><span style="background:var(--c-vid)">MP4</span>
-      </div>
-      <strong id="dropTitle">Dateien hierher ziehen</strong>
-      <p>oder klicken, um Dateien auszuwählen. Mehrere Dateien gleichzeitig sind möglich.</p>
+      <span class="plus" aria-hidden="true">+</span>
+      <strong id="dropTitle">Ziag de Dateien do eini</strong>
+      <p>Oder klick do, dann suachst as aus. Gern a mehrere auf amoi.</p>
     </div>
     <input type="file" id="picker" multiple hidden>
     <ul class="list" id="list"></ul>
     <div class="listfoot" id="listfoot" hidden>
       <span id="summary"></span>
-      <button class="link" id="clear">Liste leeren</button>
+      <button class="link" id="clear">Ois wegräumen</button>
     </div>
   </section>
 
-  <section class="col targets" aria-label="Zielformat">
-    <h2>Umwandeln in</h2>
-    <div id="tiles"><p class="empty-hint">Füge links Dateien hinzu. Danach siehst du hier alle Formate, in die sie sich umwandeln lassen.</p></div>
+  <section class="col tafel" aria-label="Zielformat">
+    <h2>Wos wüst draus macha?</h2>
+    <div id="tiles"></div>
 
     <div class="dock">
       <div class="dockrow">
         <div class="outdir">
-          <span>Speichern in</span>
+          <span>Ablegen in</span>
           <span class="path" title="" id="outdirWrap"><bdi id="outdir"></bdi></span>
           <button class="btn" id="pick">Ändern</button>
-          <button class="btn" id="openout">Öffnen</button>
+          <button class="btn" id="openout">Aufmachen</button>
         </div>
-        <button class="go" id="go" disabled>Umwandeln</button>
+        <button class="go" id="go" disabled>Umwexxxln</button>
       </div>
-      <label class="merge" id="mergeRow" hidden><input type="checkbox" id="merge"> Alle Dateien zu einer einzigen PDF zusammenfügen</label>
+      <label class="merge" id="mergeRow" hidden><input type="checkbox" id="merge"> Ois zu ana einzigen PDF zsammpicken</label>
       <div class="route" id="route"></div>
       <details>
         <summary>Einstellungen</summary>
@@ -226,7 +224,7 @@ summary{cursor:pointer;padding:10px 14px;font-weight:600;font-size:14px}
           </label>
           <label>Trennzeichen für CSV-Dateien
             <select data-opt="csv_sep">
-              <option value=";">Semikolon ; (Excel Deutschland/Österreich)</option>
+              <option value=";">Semikolon ; (Excel in Österreich und Deutschland)</option>
               <option value=",">Komma ,</option>
               <option value="tab">Tabulator</option>
             </select>
@@ -257,7 +255,7 @@ summary{cursor:pointer;padding:10px 14px;font-weight:600;font-size:14px}
 const CAT_COLOR = {"PDF":"var(--c-pdf)","Dokument":"var(--c-doc)","Präsentation":"var(--c-ppt)",
   "Tabelle":"var(--c-xls)","Bild":"var(--c-img)","Audio":"var(--c-aud)","Video":"var(--c-vid)"};
 const CAT_TITLE = {"PDF":"PDF","Dokument":"Dokumente","Präsentation":"Präsentationen","Tabelle":"Tabellen",
-  "Bild":"Bilder","Audio":"Audio","Video":"Video"};
+  "Bild":"Bilder","Audio":"Musik","Video":"Video"};
 let INFO = null, files = [], target = null, busy = false;
 const $ = s => document.querySelector(s);
 
@@ -268,24 +266,24 @@ async function api(path, body){
   if (!r.ok) throw new Error(j.error || ("Fehler " + r.status));
   return j;
 }
-function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show");
-  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"), 3200); }
+function toast(msg, bad){ const t=$("#toast"); t.textContent=msg; t.classList.toggle("bad", !!bad); t.classList.add("show");
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"), 3400); }
 function fmtSize(n){ if(n<1024) return n+" B"; if(n<1048576) return (n/1024).toFixed(0)+" KB";
   if(n<1073741824) return (n/1048576).toFixed(1).replace(".",",")+" MB"; return (n/1073741824).toFixed(2).replace(".",",")+" GB"; }
 function catOf(ext){ return INFO.formats[ext] ? INFO.formats[ext].cat : null; }
 function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function braucht(s){ return String(s || "").replace(/^benötigt/, "braucht"); }
 
 /* ---------- Start ---------- */
 async function init(){
   INFO = await api("/api/info");
   $("#ver").textContent = INFO.version_name || "";
   const t = INFO.tools, ms = t.msoffice.length;
-  const office = ms ? "Microsoft Office" : "LibreOffice";
   $("#engines").innerHTML = [
-    [ms || t.libreoffice, ms ? "Microsoft Office" : (t.libreoffice ? "LibreOffice" : "Kein Office-Programm")],
-    [t.ffmpeg, "Audio & Video"], [t.pandoc, "E-Book & Markdown"]
+    [ms || t.libreoffice, ms ? "Microsoft Office" : (t.libreoffice ? "LibreOffice" : "Ka Office-Programm")],
+    [t.ffmpeg, "Musik & Video"], [t.pandoc, "E-Books & Markdown"]
   ].map(([on,l]) => `<span class="engine ${on?"on":""}"><span class="dot"></span>${l}</span>`).join("")
-   + (!ms && !t.libreoffice ? `<span class="engine"><button id="getLO">LibreOffice kostenlos holen</button></span>` : "");
+   + (!ms && !t.libreoffice ? `<span class="engine on"><button id="getLO">LibreOffice gratis holen</button></span>` : "");
   const lo = $("#getLO"); if (lo) lo.onclick = () => api("/api/open-url", {url:"https://de.libreoffice.org/download/download/"});
   applySettings(INFO.settings);
   render();
@@ -340,13 +338,12 @@ function upload(f, item){
   xhr.open("POST", "/api/upload?name=" + encodeURIComponent(f.name));
   xhr.upload.onprogress = e => { if (e.lengthComputable) { item.progress = e.loaded / e.total; renderList(); } };
   xhr.onload = () => {
-    if (xhr.status !== 200) { item.state = "error"; item.error = "Hochladen fehlgeschlagen"; render(); return; }
-    Object.assign(item, JSON.parse(xhr.responseText), {uploading: false, progress: 0,
-      state: "ready"});
-    if (!item.supported) { item.state = "error"; item.error = "Dieses Format wird nicht unterstützt."; }
+    if (xhr.status !== 200) { item.state = "error"; item.error = "Laden is schiefgangen."; render(); return; }
+    Object.assign(item, JSON.parse(xhr.responseText), {uploading: false, progress: 0, state: "ready"});
+    if (!item.supported) { item.state = "error"; item.error = "Des Format kenn i ned."; }
     render();
   };
-  xhr.onerror = () => { item.state = "error"; item.error = "Hochladen fehlgeschlagen"; render(); };
+  xhr.onerror = () => { item.state = "error"; item.error = "Laden is schiefgangen."; render(); };
   xhr.send(f);
 }
 async function removeFile(item){
@@ -362,33 +359,33 @@ function render(){ renderList(); renderTiles(); renderDock(); }
 function renderList(){
   const has = files.length > 0;
   drop.className = "drop " + (has ? "small" : "big");
-  $("#dropTitle").textContent = has ? "Weitere Dateien hinzufügen" : "Dateien hierher ziehen";
+  $("#dropTitle").textContent = has ? "No mehr eini" : "Ziag de Dateien do eini";
   $("#count").textContent = has ? files.length + (files.length === 1 ? " Datei" : " Dateien") : "";
   $("#listfoot").hidden = !has;
   const done = files.filter(f => f.state === "done").length;
-  $("#summary").textContent = done ? `${done} von ${files.length} umgewandelt` : "";
+  $("#summary").textContent = done ? `${done} von ${files.length} umgwexxxlt` : "";
   $("#list").innerHTML = files.map((f, i) => {
     const shownExt = f.state === "done" && f.outputs && f.outputs[0] && !f.outputs[0].isdir
       ? f.outputs[0].name.split(".").pop().toLowerCase() : f.ext;
     const cat = INFO && catOf(shownExt);
-    const color = CAT_COLOR[cat] || "var(--muted)";
+    const color = CAT_COLOR[cat] || "var(--grau)";
     let meta = fmtSize(f.size), cls = "";
-    if (f.state === "uploading") meta = "Wird geladen …";
-    if (f.state === "waiting") meta = "Wartet …";
-    if (f.state === "running") meta = f.msg || "Wird umgewandelt …";
-    if (f.state === "done") { meta = "✓ " + (f.msg || "Fertig"); cls = "ok"; }
-    if (f.state === "error") { meta = f.error || "Fehler"; cls = "err"; }
+    if (f.state === "uploading") meta = "Wird glodn …";
+    if (f.state === "waiting") meta = "Wart a bissl …";
+    if (f.state === "running") meta = f.msg || "Wird umgwexxxlt …";
+    if (f.state === "done") { meta = "Passt! " + (f.msg || "Fertig"); cls = "ok"; }
+    if (f.state === "error") { meta = f.error || "Is schiefgangen."; cls = "err"; }
     const showBar = f.state === "uploading" || f.state === "running";
     const acts = f.state === "done" ? (f.outputs || []).map((o, k) =>
       `<div class="actions">
-         ${o.isdir ? "" : `<button data-act="open" data-i="${i}" data-k="${k}">Öffnen</button>`}
-         <button data-act="reveal" data-i="${i}" data-k="${k}">Im Ordner zeigen</button>
+         ${o.isdir ? "" : `<button data-act="open" data-i="${i}" data-k="${k}">Aufmachen</button>`}
+         <button data-act="reveal" data-i="${i}" data-k="${k}">Im Ordner zoagn</button>
          <button data-act="save" data-i="${i}" data-k="${k}">${o.isdir ? "Als ZIP speichern" : "Kopie speichern"}</button>
        </div>`).join("") : "";
     return `<li class="file">
       <span class="badge" style="background:${color}">${esc((shownExt || "?").toUpperCase().slice(0,5))}</span>
       <span class="fname" title="${esc(f.name)}">${esc(f.state === "done" && f.outputs && f.outputs[0] ? f.outputs[0].name : f.name)}</span>
-      <button class="x" data-act="rm" data-i="${i}" aria-label="${esc(f.name)} entfernen" ${busy ? "disabled" : ""}>×</button>
+      <button class="x" data-act="rm" data-i="${i}" aria-label="${esc(f.name)} wegtoan" ${busy ? "disabled" : ""}>×</button>
       ${showBar ? `<span class="bar"><i style="width:${Math.round((f.progress||0)*100)}%"></i></span>` :
         `<span class="fmeta ${cls}">${esc(meta)}</span>`}
       ${acts}
@@ -405,7 +402,7 @@ $("#list").onclick = async e => {
     if (b.dataset.act === "reveal") await api("/api/open", {path: o.path, what: "reveal"});
     if (b.dataset.act === "save") { const a = document.createElement("a");
       a.href = "/api/download?path=" + encodeURIComponent(o.path); a.download = ""; a.click(); }
-  } catch (err) { toast(err.message); }
+  } catch (err) { toast(err.message, true); }
 };
 
 function usable(){ return files.filter(f => f.id && f.supported && f.state !== "uploading"); }
@@ -417,20 +414,24 @@ function commonTargets(){
   u.forEach(f => Object.entries(f.unavailable || {}).forEach(([k, v]) => { if (!ok.has(k)) na[k] = v; }));
   return {ok: [...ok], na};
 }
+function leer(titel, text){
+  return `<p class="leer">${titel}</p><p class="leer-text">${text}</p>`;
+}
 function renderTiles(){
   const box = $("#tiles");
   if (!INFO) return;
   const u = usable();
   if (!u.length) {
-    box.innerHTML = files.length ? `<p class="empty-hint">${files.some(f => f.state === "uploading") ?
-      "Dateien werden geladen …" : "Diese Dateien werden nicht unterstützt."}</p>` :
-      `<p class="empty-hint">Füge links Dateien hinzu. Danach siehst du hier alle Formate, in die sie sich umwandeln lassen.</p>`;
+    box.innerHTML = files.length
+      ? (files.some(f => f.state === "uploading") ? leer("Moment …", "De Dateien werden grad glodn.")
+                                                   : leer("Hm, des kenn i ned.", "Mit de Dateien kann Wexxxla nix anfangen. Probier a PDF, a Word-Datei, a Foto oder a Video."))
+      : leer("Na, wos darf's sein?", "Ziag links a Datei eini. Dann steht do auf da Tafel, wos ma draus macha kann.");
     target = null; return;
   }
   const {ok, na} = commonTargets();
   if (target && !ok.includes(target)) target = null;
   if (!ok.length && !Object.keys(na).length) {
-    box.innerHTML = `<p class="empty-hint">Für diese Mischung gibt es kein gemeinsames Zielformat. Wandle die Dateien getrennt um, zum Beispiel erst alle Bilder, dann alle Videos.</p>`;
+    box.innerHTML = leer("De Mischung geht ned zsamm.", "Wexxxl de Dateien getrennt, zum Beispiel z'erst de Fotos und dann de Videos.");
     return;
   }
   const srcExts = new Set(u.map(f => f.ext));
@@ -441,8 +442,8 @@ function renderTiles(){
       const off = !ok.includes(k);
       const label = INFO.formats[k].label.replace(/\s*\(\.[a-z]+\)$/, "");
       return `<button class="tile ${target === k ? "sel" : ""}" data-fmt="${k}" style="--cat:${CAT_COLOR[cat]}"
-        ${off ? `disabled title="${esc(na[k])}"` : ""} aria-pressed="${target === k}">
-        <span class="ext">${k.toUpperCase()}</span><span class="name">${esc(off ? na[k] : label)}</span></button>`;
+        ${off ? `disabled title="${esc(braucht(na[k]))}"` : ""} aria-pressed="${target === k}">
+        <span class="ext">${k.toUpperCase()}</span><span class="name">${esc(off ? braucht(na[k]) : label)}</span></button>`;
     }).join("") + `</div></div>`;
   }).join("");
 }
@@ -454,14 +455,15 @@ async function showRoute(){
   const u = usable(), exts = [...new Set(u.map(f => f.ext))];
   if (!target || exts.length !== 1) { $("#route").textContent = ""; return; }
   try { const r = await api("/api/route", {src: exts[0], dst: target});
-    $("#route").textContent = r.route.includes("→", r.route.indexOf("→") + 1) ? "Weg: " + r.route : "";
+    $("#route").textContent = r.route.includes("→", r.route.indexOf("→") + 1) ? "Wexxxla nimmt an Umweg: " + r.route : "";
   } catch { $("#route").textContent = ""; }
 }
 function renderDock(){
   const u = usable();
   const go = $("#go");
   go.disabled = busy || !target || !u.length;
-  go.textContent = busy ? "Wird umgewandelt …" : target ? `In ${target.toUpperCase()} umwandeln` : "Umwandeln";
+  go.textContent = busy ? "Wird umgwexxxlt …" : target ? `In ${target.toUpperCase()} umwexxxln`
+                 : u.length ? "Format aussuachn" : "Umwexxxln";
   const mergeOk = target === "pdf" && u.length > 1;
   $("#mergeRow").hidden = !mergeOk;
   if (!mergeOk) $("#merge").checked = false;
@@ -470,10 +472,10 @@ function renderDock(){
 
 /* ---------- Ordner ---------- */
 $("#pick").onclick = async () => { try { const r = await api("/api/pick-folder", {});
-  INFO.settings.out_dir = r.out_dir; applySettings(INFO.settings); } catch (e) { toast(e.message); } };
-$("#openout").onclick = () => api("/api/open", {what: "outdir"}).catch(e => toast(e.message));
+  INFO.settings.out_dir = r.out_dir; applySettings(INFO.settings); } catch (e) { toast(e.message, true); } };
+$("#openout").onclick = () => api("/api/open", {what: "outdir"}).catch(e => toast(e.message, true));
 
-/* ---------- Umwandeln ---------- */
+/* ---------- Umwexxxln ---------- */
 $("#go").onclick = async () => {
   const u = usable(); if (!u.length || !target) return;
   busy = true; u.forEach(f => Object.assign(f, {state: "waiting", progress: 0, outputs: [], error: ""}));
@@ -481,10 +483,12 @@ $("#go").onclick = async () => {
   try {
     const {job} = await api("/api/convert", {ids: u.map(f => f.id), target, merge: $("#merge").checked});
     await poll(job);
-  } catch (e) { toast(e.message); }
+  } catch (e) { toast(e.message, true); }
   busy = false; render();
   const ok = u.filter(f => f.state === "done").length, bad = u.length - ok;
-  toast(bad ? `${ok} umgewandelt, ${bad} fehlgeschlagen` : (ok === 1 ? "Datei umgewandelt" : `${ok} Dateien umgewandelt`));
+  if (!bad) toast(ok === 1 ? "Oida, leiwaund! Passt." : `Oida, leiwaund! ${ok} Dateien passen.`);
+  else if (!ok) toast("Hoppala, des is schiefgangen.", true);
+  else toast(`${ok} passen, ${bad} san schiefgangen.`, true);
 };
 async function poll(job){
   for (;;) {
@@ -502,7 +506,7 @@ setInterval(() => fetch("/api/ping", {method: "POST"}).catch(()=>{}), 5000);
 fetch("/api/ping", {method: "POST"}).catch(()=>{});
 window.addEventListener("pagehide", () => navigator.sendBeacon("/api/bye"));
 
-init().catch(e => { document.body.innerHTML = "<p style='padding:2rem'>Fehler beim Start: " + esc(e.message) + "</p>"; });
+init().catch(e => { document.body.innerHTML = "<p style='padding:2rem'>Hoppala, beim Starten is was schiefgangen: " + esc(e.message) + "</p>"; });
 </script>
 </body>
 </html>

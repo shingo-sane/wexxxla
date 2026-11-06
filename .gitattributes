@@ -3,3 +3,4 @@
 ANLEITUNG.txt text eol=crlf
 *.ico binary
 *.png binary
+*.woff2 binary

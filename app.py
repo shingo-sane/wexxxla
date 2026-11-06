@@ -304,6 +304,19 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Cache-Control", "no-store")
             self.end_headers()
             self.wfile.write(data)
+        elif url.path.startswith("/fonts/") and url.path.endswith(".woff2"):
+            name = os.path.basename(url.path)
+            path = resource("web", "fonts", name)
+            if not os.path.isfile(path):
+                return self.send_error(404)
+            with open(path, "rb") as f:
+                data = f.read()
+            self.send_response(200)
+            self.send_header("Content-Type", "font/woff2")
+            self.send_header("Content-Length", str(len(data)))
+            self.send_header("Cache-Control", "max-age=86400")
+            self.end_headers()
+            self.wfile.write(data)
         elif url.path == "/favicon.ico":
             svg = (b'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26"><rect x="1" y="3" width="13" height="17" '
                    b'rx="2" fill="#B8312F"/><rect x="12" y="6" width="13" height="17" rx="2" fill="#2843B8"/></svg>')
