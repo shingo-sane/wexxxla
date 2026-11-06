@@ -379,7 +379,14 @@ function knopf(f) {
   b.textContent = f.toUpperCase();
   b.title = DATA.formats[f].label;
   b.setAttribute("aria-pressed", "false");
-  b.onclick = () => waehle(f);
+  b.onclick = () => {
+    waehle(f);
+    // am Handy steht die Antwort unter den Knöpfen: hinscrollen
+    if (window.matchMedia("(max-width: 900px)").matches) {
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      document.getElementById("antwort").scrollIntoView({behavior: reduce ? "auto" : "smooth", block: "start"});
+    }
+  };
   b.dataset.f = f;
   return b;
 }
