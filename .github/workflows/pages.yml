@@ -1,0 +1,51 @@
+name: Website
+
+# Veröffentlicht den Ordner site/ als Website auf GitHub Pages (Branch gh-pages).
+# Die Schriften werden hier heruntergeladen und selbst gehostet.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Schriften holen (Big Shoulders Display, Atkinson Hyperlegible, beide SIL OFL)
+        run: |
+          mkdir -p site/fonts tmpf
+          cd tmpf
+          npm pack @fontsource/big-shoulders-display@5 @fontsource/atkinson-hyperlegible@5
+          for t in *.tgz; do d="${t%.tgz}"; mkdir "$d"; tar xzf "$t" -C "$d" --strip-components=1; done
+          cp fontsource-big-shoulders-display-*/files/big-shoulders-display-latin-700-normal.woff2 \
+             fontsource-big-shoulders-display-*/files/big-shoulders-display-latin-900-normal.woff2 \
+             fontsource-atkinson-hyperlegible-*/files/atkinson-hyperlegible-latin-400-normal.woff2 \
+             fontsource-atkinson-hyperlegible-*/files/atkinson-hyperlegible-latin-700-normal.woff2 \
+             fontsource-atkinson-hyperlegible-*/files/atkinson-hyperlegible-latin-400-italic.woff2 \
+             ../site/fonts/
+          cp fontsource-big-shoulders-display-*/LICENSE ../site/fonts/LICENSE-Big-Shoulders-Display.txt || true
+          cp fontsource-atkinson-hyperlegible-*/LICENSE ../site/fonts/LICENSE-Atkinson-Hyperlegible.txt || true
+          ls -la ../site/fonts
+
+      - name: Auf gh-pages veröffentlichen
+        run: |
+          cd site
+          touch .nojekyll
+          git init -q -b gh-pages
+          git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "Website aus ${GITHUB_SHA::7}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" gh-pages

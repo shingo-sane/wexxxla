@@ -6,6 +6,11 @@ name: Windows-Build
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "site/**"
+      - "docs/**"
+      - "README.md"
+      - ".github/workflows/pages.yml"
   workflow_dispatch:
 
 permissions:

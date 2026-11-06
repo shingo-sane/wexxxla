@@ -2,6 +2,8 @@
 
 **Der Converter, der jede Datei umadum wechselt.** Dateien reinziehen, Zielformat anklicken, fertig – PDF zu Word, PDF zu PowerPoint, Excel zu PowerPoint, Word zu PDF, Video zu MP3 und noch viel mehr. Alles läuft lokal auf deinem PC, nichts wird irgendwo hochgeladen.
 
+**Website:** [shingo-sane.github.io/wexxxla](https://shingo-sane.github.io/wexxxla/)
+
 ![Wexxxla](docs/screenshot.svg)
 
 ## Herunterladen

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="de-AT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wexxxla – der Datei-Wexxxla aus Österreich</title>
+<meta name="description" content="Wexxxla wandelt Dateien um: PDF auf Word, PDF auf PowerPoint, Excel auf PowerPoint, Video auf MP3 und vieles mehr. Gratis, für Windows, alles bleibt auf deinem PC.">
+<meta property="og:title" content="Wexxxla – bist deppad, schau da des au">
+<meta property="og:description" content="Der gratis Datei-Converter für Windows. PDF, Word, PowerPoint, Excel, Bilder, Audio, Video.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Crect x='1' y='3' width='13' height='17' rx='2' fill='%23C8102E'/%3E%3Crect x='12' y='6' width='13' height='17' rx='2' fill='%232843B8'/%3E%3C/svg%3E">
+<style>
+/* Schriften liegen selbst gehostet in fonts/ (keine Verbindung zu Google für Besucher) */
+@font-face{font-family:"Big Shoulders Display";font-weight:700;font-display:swap;src:url(fonts/big-shoulders-display-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Big Shoulders Display";font-weight:900;font-display:swap;src:url(fonts/big-shoulders-display-latin-900-normal.woff2) format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-weight:400;font-display:swap;src:url(fonts/atkinson-hyperlegible-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-weight:700;font-display:swap;src:url(fonts/atkinson-hyperlegible-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-weight:400;font-style:italic;font-display:swap;src:url(fonts/atkinson-hyperlegible-latin-400-italic.woff2) format("woff2")}
+:root{
+  --rot:#C8102E;        /* Österreich-Rot */
+  --rot-dunkel:#9E0B22;
+  --senf:#F3C300;       /* Senf vom Würstelstand */
+  --tafel:#1D1D1B;      /* Menütafel */
+  --tafel-linie:#3A3A36;
+  --blech:#E4E8E3;      /* Kiosk-Blech */
+  --papier:#FFFFFF;
+  --tinte:#1D1D1B;
+  --grau:#55574F;
+  --blau:#2843B8;       /* Wexxxla-Blau aus dem Logo */
+  --sign:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --text:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--papier);color:var(--tinte);font:18px/1.6 var(--text);-webkit-font-smoothing:antialiased}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--blau);outline-offset:3px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+
+/* ---------- Kopf ---------- */
+.kopf{background:var(--rot);color:#fff}
+.kopf nav{display:flex;align-items:center;gap:28px;padding:18px 0}
+.marke{display:flex;align-items:center;gap:10px;text-decoration:none;font:900 30px/1 var(--sign);letter-spacing:.01em}
+.marke svg{flex:none}
+.kopf nav .links{margin-left:auto;display:flex;gap:24px;font-weight:700;font-size:16px}
+.kopf nav .links a{text-decoration:none;border-bottom:2px solid transparent}
+.kopf nav .links a:hover{border-color:#fff}
+
+/* ---------- Held ---------- */
+.held{background:var(--rot);color:#fff;padding:40px 0 0;overflow:hidden}
+.held .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:end}
+.held h1{font:900 clamp(64px,9.4vw,132px)/.86 var(--sign);text-transform:uppercase;margin:0 0 28px;letter-spacing:-.005em}
+.held h1 span{display:block}
+.held p.lead{font-size:21px;line-height:1.5;max-width:30em;margin:0 0 32px}
+.held .text{padding-bottom:64px}
+.knopf{display:inline-flex;align-items:center;gap:12px;background:var(--senf);color:var(--tinte);text-decoration:none;
+  font:900 30px/1 var(--sign);text-transform:uppercase;padding:18px 28px 16px;border-radius:4px;
+  box-shadow:0 5px 0 #A88600;transition:transform .08s,box-shadow .08s}
+.knopf:hover{background:#FFD21F}
+.knopf:active{transform:translateY(4px);box-shadow:0 1px 0 #A88600}
+.knopf svg{flex:none}
+.knopf-info{display:block;margin-top:14px;font-size:15px;opacity:.92}
+.knopf-info a{font-weight:700}
+.bildschirm{background:var(--tafel);border-radius:10px 10px 0 0;padding:10px 10px 0;box-shadow:0 0 0 1px rgba(0,0,0,.2)}
+.bildschirm .leiste{display:flex;gap:6px;padding:2px 4px 10px}
+.bildschirm .leiste i{width:10px;height:10px;border-radius:50%;background:#55574F}
+.bildschirm img{border-radius:4px 4px 0 0;width:100%;aspect-ratio:1600/1066;background:#EEF1F5}
+
+/* ---------- Streifen ---------- */
+.streifen{background:var(--senf);border-block:4px solid var(--tinte)}
+.streifen p{margin:0;padding:14px 0;font:700 22px/1.3 var(--sign);text-transform:uppercase;letter-spacing:.03em;
+  white-space:nowrap;overflow:hidden;text-overflow:clip}
+.streifen b{color:var(--rot);font-weight:900;margin:0 .4em}
+
+/* ---------- Abschnitte ---------- */
+section{padding:96px 0}
+h2{font:900 clamp(44px,5.6vw,72px)/.95 var(--sign);text-transform:uppercase;margin:0 0 20px}
+.intro{font-size:20px;max-width:36em;margin:0 0 48px;color:var(--grau)}
+
+/* Was es kann */
+.kann{display:grid;grid-template-columns:repeat(2,1fr);gap:56px 64px}
+.kann h3{font:900 34px/1 var(--sign);text-transform:uppercase;margin:0 0 10px;color:var(--rot)}
+.kann p{margin:0;max-width:30em}
+
+/* Bestelltafel */
+.tafel-bereich{background:var(--blech)}
+.tafel{background:var(--tafel);color:#F4F4F0;border-radius:6px;padding:40px;display:grid;grid-template-columns:1.25fr 1fr;gap:48px;
+  border:10px solid #2E2E2B;box-shadow:inset 0 0 0 1px var(--tafel-linie)}
+.tafel h3{font:900 30px/1 var(--sign);text-transform:uppercase;color:var(--senf);margin:0 0 6px}
+.tafel .hinweis{font-size:15px;color:#B9BAB2;margin:0 0 20px}
+.gruppe{margin-bottom:18px}
+.gruppe .gname{font-size:14px;color:#B9BAB2;margin-bottom:6px}
+.formate{display:flex;flex-wrap:wrap;gap:6px}
+.formate button{font:700 20px/1 var(--sign);letter-spacing:.03em;text-transform:uppercase;background:transparent;color:#F4F4F0;
+  border:2px solid #4A4A45;border-radius:3px;padding:8px 10px 6px;cursor:pointer}
+.formate button:hover{border-color:#F4F4F0}
+.formate button[aria-pressed="true"]{background:var(--senf);border-color:var(--senf);color:var(--tinte)}
+.ergebnis{border-left:2px dashed #4A4A45;padding-left:40px;display:flex;flex-direction:column}
+.antwort{font:900 40px/1.02 var(--sign);text-transform:uppercase;margin:0 0 22px;min-height:2.04em;color:#fff}
+.karte{list-style:none;margin:0;padding:0;column-count:2;column-gap:28px}
+.karte li{display:flex;align-items:baseline;gap:8px;padding:5px 0;border-bottom:1px dotted #4A4A45;break-inside:avoid;font-size:16px}
+.karte li .f{font:700 20px/1 var(--sign);letter-spacing:.03em;text-transform:uppercase;min-width:3.4em}
+.karte li .n{color:#B9BAB2;font-size:14px;flex:1}
+.karte li .o{color:var(--senf);font-weight:700}
+.legende{margin-top:auto;padding-top:18px;font-size:14px;color:#B9BAB2}
+.legende b{color:var(--senf)}
+
+/* Schritte */
+.schritte{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
+.schritte li{border-top:6px solid var(--tinte);padding-top:18px}
+.schritte .nr{font:900 96px/.8 var(--sign);color:var(--rot);display:block;margin-bottom:12px}
+.schritte h3{font:900 36px/1 var(--sign);text-transform:uppercase;margin:0 0 8px}
+.schritte p{margin:0}
+
+/* PDF */
+.pdf{background:var(--tafel);color:#F4F4F0}
+.pdf .intro{color:#C9CAC2}
+.pdf h2{color:var(--senf)}
+.pdf-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:56px;align-items:start}
+.pdf ul{margin:0;padding:0;list-style:none}
+.pdf li{padding:12px 0;border-bottom:1px solid var(--tafel-linie)}
+.pdf li b{color:#fff}
+.pdf figure{margin:0}
+.pdf figure img{border-radius:4px;background:#E6E9EE}
+.pdf figcaption{font-size:15px;color:#B9BAB2;margin-top:10px}
+
+/* Fragen */
+.fragen{max-width:820px}
+details{border-top:2px solid var(--tinte)}
+details:last-of-type{border-bottom:2px solid var(--tinte)}
+summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center;
+  font:900 30px/1.1 var(--sign);text-transform:uppercase;padding:20px 0}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:40px;line-height:1;color:var(--rot);transition:transform .15s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{margin:0 0 24px;max-width:38em}
+
+/* Schluss */
+.schluss{background:var(--rot);color:#fff;text-align:left}
+.schluss h2{font-size:clamp(52px,7vw,96px)}
+.schluss p{font-size:20px;margin:0 0 32px;max-width:32em}
+footer{background:var(--tinte);color:#C9CAC2;font-size:15px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;padding-top:28px;padding-bottom:28px;align-items:center}
+footer .flagge{display:inline-flex;flex-direction:column;width:30px;height:20px;border:1px solid #555;margin-right:10px;vertical-align:middle}
+footer .flagge i{flex:1;background:var(--rot)}
+footer .flagge i:nth-child(2){background:#fff}
+footer a{color:#fff}
+footer .rechts{margin-left:auto;display:flex;gap:24px}
+
+@media (max-width:900px){
+  .held .wrap,.tafel,.pdf-grid{grid-template-columns:1fr}
+  .held .text{padding-bottom:8px}
+  .ergebnis{border-left:0;border-top:2px dashed #4A4A45;padding:28px 0 0}
+  .schritte,.kann{grid-template-columns:1fr;gap:36px}
+  section{padding:72px 0}
+}
+@media (max-width:560px){
+  body{font-size:17px}
+  .wrap{padding:0 16px}
+  .kopf nav .links{display:none}
+  .tafel{padding:22px 16px;border-width:6px}
+  .karte{column-count:1}
+  .antwort{font-size:32px}
+  .knopf{font-size:26px;padding:16px 20px 14px}
+  footer .rechts{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="kopf">
+  <div class="wrap">
+    <nav aria-label="Hauptmenü">
+      <a class="marke" href="#">
+        <svg width="34" height="34" viewBox="0 0 26 26" aria-hidden="true">
+          <rect x="1" y="3" width="13" height="17" rx="2" fill="#fff"/>
+          <rect x="12" y="6" width="13" height="17" rx="2" fill="#2843B8"/>
+          <path d="M15 14.5h6m-2.5-2.5 2.5 2.5-2.5 2.5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Wexxxla
+      </a>
+      <div class="links">
+        <a href="#bestellen">Wos geht?</a>
+        <a href="#wie">Wie geht's?</a>
+        <a href="#fragen">Fragen</a>
+        <a href="https://github.com/shingo-sane/wexxxla">GitHub</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="held">
+    <div class="wrap">
+      <div class="text">
+        <h1><span>Bist deppad,</span><span>schau da</span><span>des au.</span></h1>
+        <p class="lead">Wexxxla wexxxlt deine Dateien: PDF auf Word, PDF auf PowerPoint, Excel auf PowerPoint, Video auf MP3 und no vü mehr. Gratis, ohne Anmelden, und ois bleibt auf deim PC.</p>
+        <a class="knopf" id="download" href="https://github.com/shingo-sane/wexxxla/releases/latest">
+          <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Gratis owaladn
+        </a>
+        <span class="knopf-info"><span id="version">Oida 1.0</span> für Windows 10 und 11<span id="groesse"></span>. <a href="https://github.com/shingo-sane/wexxxla">Quellcode auf GitHub</a></span>
+      </div>
+      <div class="bildschirm" aria-hidden="false">
+        <div class="leiste"><i></i><i></i><i></i></div>
+        <img src="img/screenshot.svg" alt="Das Wexxxla-Fenster: links drei Dateien, die gerade in Word umgewandelt wurden, rechts die Formate zum Auswählen." width="1600" height="1066">
+      </div>
+    </div>
+  </div>
+
+  <div class="streifen" aria-hidden="true">
+    <p>PDF<b>/</b>Word<b>/</b>PowerPoint<b>/</b>Excel<b>/</b>JPG<b>/</b>PNG<b>/</b>HEIC<b>/</b>MP4<b>/</b>MP3<b>/</b>Markdown<b>/</b>E-Book<b>/</b>CSV<b>/</b>GIF<b>/</b>WebP<b>/</b>WAV<b>/</b>MOV<b>/</b>FLAC</p>
+  </div>
+
+  <section id="kann">
+    <div class="wrap">
+      <h2>Wos kann des Werkl?</h2>
+      <p class="intro">Oida, leiwaund: Datei reinziagn, Format aussuachn, fertig. Ka Internet-Gfrett, ka Abo, ka Werbung.</p>
+      <div class="kann">
+        <div>
+          <h3>Ois in ois</h3>
+          <p>41 Formate aus Büro, Fotos, Musik und Video. Gibt's kan direkten Weg, nimmt Wexxxla selber an Umweg, zum Beispiel PPT über PPTX auf Word.</p>
+        </div>
+        <div>
+          <h3>PDF, oba gscheit</h3>
+          <p>PDF auf Word oder PowerPoint wird ned oafach a Büdl. Texte, Schriftarten, Farben, Tabellen, Diagramme und Fotos kommen als echte, bearbeitbare Sachen raus.</p>
+        </div>
+        <div>
+          <h3>Ois bleibt daham</h3>
+          <p>Deine Dateien verlassen nie deinen PC. Nix wird hochgladen, nix wird mitgschnitten.</p>
+        </div>
+        <div>
+          <h3>Glei an ganzen Packen</h3>
+          <p>Zieh hundert Dateien auf amoi rein, oder füg vü Dateien zu ana einzigen PDF zsamm.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="bestellen" class="tafel-bereich">
+    <div class="wrap">
+      <h2>Wos host, wos wüst?</h2>
+      <p class="intro">Wie beim Würstelstand: Sag, wos für a Datei du host, und auf da Tafel steht, wos Wexxxla draus mocht.</p>
+      <div class="tafel">
+        <div>
+          <h3>I hob a …</h3>
+          <p class="hinweis">Format antippen</p>
+          <div id="quellen"></div>
+        </div>
+        <div class="ergebnis" aria-live="polite">
+          <p class="antwort" id="antwort">Na, wos darf's sein?</p>
+          <ul class="karte" id="karte"></ul>
+          <p class="legende" id="legende" hidden><b>*</b> braucht Microsoft Office oder des gratis LibreOffice am PC.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="wie">
+    <div class="wrap">
+      <h2>Wie geht's?</h2>
+      <p class="intro">Drei Schritt. Mehr is ned.</p>
+      <ol class="schritte">
+        <li><span class="nr">1</span><h3>Reinziagn</h3><p>Dateien ins Wexxxla-Fenster ziehn oder draufklicken und aussuachn. Gern a mehrere auf amoi.</p></li>
+        <li><span class="nr">2</span><h3>Aussuachn</h3><p>Rechts des Format antippen, des du haben wüst. Wexxxla zeigt nur des an, wos a wirklich geht.</p></li>
+        <li><span class="nr">3</span><h3>Umwexxxln</h3><p>Knopf drucken, a bissl warten, fertig. Die neuen Dateien liegen in Downloads im Ordner „Konvertiert“.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="pdf">
+    <div class="wrap">
+      <h2>Schau da des au</h2>
+      <p class="intro">De meisten Converter machen aus ana PDF-Seite a Foto und picken des in PowerPoint. Wexxxla schaut si de Seite gscheit an.</p>
+      <div class="pdf-grid">
+        <ul>
+          <li><b>Texte</b> bleiben Texte, mit da Schriftart, Größe und Farb vom Original.</li>
+          <li><b>Tabellen</b> werden echte Tabellen, a ohne Linien, mit verbundenen Zellen und Zellfarben.</li>
+          <li><b>Diagramme und Formen</b> kannst in PowerPoint direkt bearbeiten.</li>
+          <li><b>Überschriften</b> werden in Word echte Überschriften, damit's Inhaltsverzeichnis funktioniert.</li>
+          <li><b>PDF auf Excel</b>: Zahlen landen als Zahlen in de Zellen, ned als Text.</li>
+        </ul>
+        <figure>
+          <img src="img/pdf-vergleich.svg" alt="Vergleich: links eine Original-PDF mit Tabelle, Diagramm und Infobox, in der Mitte das Ergebnis in PowerPoint, rechts in Word." loading="lazy" width="1817" height="883">
+          <figcaption>Links des Original, in da Mitt PowerPoint, rechts Word. Ois bearbeitbar.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="fragen">
+    <div class="wrap">
+      <h2>Heast, i hob a Frog</h2>
+      <div class="fragen">
+        <details>
+          <summary>Kost des wos?</summary>
+          <p>Na. Wexxxla is gratis, ohne Werbung und ohne Abo. Der Quellcode liegt offen auf GitHub (Lizenz GPL v3).</p>
+        </details>
+        <details>
+          <summary>Schickt Wexxxla meine Dateien ins Internet?</summary>
+          <p>Na, sicher ned. De Umwandlung passiert komplett auf deim PC. Wexxxla braucht ned amoi a Internetverbindung.</p>
+        </details>
+        <details>
+          <summary>Windows sogt, de Datei is gfährlich?</summary>
+          <p>Des is da SmartScreen, der meldet si bei Programmen, de ned vü Leit kennan. Klick auf „Weitere Informationen“ und dann auf „Trotzdem ausführen“. Wer's genau wissen wü: Der ganze Code is auf GitHub, und de EXE wird dort automatisch draus baut.</p>
+        </details>
+        <details>
+          <summary>Brauch i Office?</summary>
+          <p>Nur wenn a Word-, Excel- oder PowerPoint-Datei de <em>Quelle</em> is, also zum Beispiel Word auf PDF. Dann nimmt Wexxxla Microsoft Office, wenn's da is, sonst des gratis <a href="https://de.libreoffice.org/download/download/">LibreOffice</a>. PDF auf Word, Bilder, Musik und Videos gehn ganz ohne.</p>
+        </details>
+        <details>
+          <summary>Und wos is mit Mac?</summary>
+          <p>Momentan gibt's Wexxxla nur für Windows 10 und 11. Wer's selber probiern wü: Mit Python lauft's a am Mac, wie, steht auf GitHub.</p>
+        </details>
+        <details>
+          <summary>Wieso heißt des Wexxxla?</summary>
+          <p>Weil's deine Dateien wexxxlt. Und weil's leiwaund klingt. De Versionen hoaßn übrigens „Oida“: Oida 1.0, Oida 1.1 und so weiter.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="schluss">
+    <div class="wrap">
+      <h2>Oida, leiwaund.</h2>
+      <p>Hol da Wexxxla und wexxxl los. Entpacken, Wexxxla.exe starten, fertig.</p>
+      <a class="knopf" id="download2" href="https://github.com/shingo-sane/wexxxla/releases/latest">
+        <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Gratis owaladn
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span><span class="flagge" aria-hidden="true"><i></i><i></i><i></i></span>Gmocht in Österreich</span>
+    <span>Wexxxla <span class="v-text">Oida 1.0</span>, Lizenz GPL v3</span>
+    <span class="rechts">
+      <a href="https://github.com/shingo-sane/wexxxla">GitHub</a>
+      <a href="https://github.com/shingo-sane/wexxxla/releases">Alle Versionen</a>
+      <a href="https://github.com/shingo-sane/wexxxla/issues">Fehler melden</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+/* ---------- Neueste Version von GitHub holen ---------- */
+(async () => {
+  try {
+    const r = await fetch("https://api.github.com/repos/shingo-sane/wexxxla/releases/latest");
+    if (!r.ok) return;
+    const rel = await r.json();
+    const zip = (rel.assets || []).find(a => /windows\.zip$/i.test(a.name));
+    const name = (rel.name || "").replace(/^Wexxxla\s*/i, "") || "Oida";
+    document.getElementById("version").textContent = name;
+    document.querySelectorAll(".v-text").forEach(e => e.textContent = name);
+    if (zip) {
+      document.getElementById("download").href = zip.browser_download_url;
+      document.getElementById("download2").href = zip.browser_download_url;
+      document.getElementById("groesse").textContent = ", " + Math.round(zip.size / 1e6) + " MB";
+    }
+  } catch (e) { /* dann bleibt der Link auf die Release-Seite */ }
+})();
+
+/* ---------- Bestelltafel ---------- */
+const GRUPPEN = {"PDF":"PDF","Dokument":"Dokumente","Präsentation":"Präsentationen","Tabelle":"Tabellen",
+  "Bild":"Bilder","Audio":"Musik","Video":"Video"};
+const PASST = ["Oida, leiwaund. Geht sofort.","Passt, mach ma.","Ka Problem, Chef.","A gmahde Wiesn.",
+  "Na sicher. Bist deppad, schau da des au.","Heast, des is ur easy."];
+const OFFICE = ["Geht, oba do brauchst Office.","Mach ma, mit Office oder LibreOffice."];
+let DATA = null, wahl = null, n = 0;
+
+function knopf(f) {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.textContent = f.toUpperCase();
+  b.title = DATA.formats[f].label;
+  b.setAttribute("aria-pressed", "false");
+  b.onclick = () => waehle(f);
+  b.dataset.f = f;
+  return b;
+}
+function waehle(f) {
+  wahl = f;
+  document.querySelectorAll("#quellen button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.f === f)));
+  const ziele = DATA.routes[f] || {};
+  const liste = Object.keys(DATA.formats).filter(z => z in ziele);
+  const office = liste.some(z => ziele[z]);
+  const alleOffice = liste.length && liste.every(z => ziele[z]);
+  const satz = alleOffice ? OFFICE[n++ % OFFICE.length] : PASST[n++ % PASST.length];
+  document.getElementById("antwort").textContent = liste.length
+    ? `${f.toUpperCase()}? ${satz}`
+    : `${f.toUpperCase()}? Do miassat ma zaubern.`;
+  document.getElementById("karte").innerHTML = liste.map(z =>
+    `<li><span class="f">${z.toUpperCase()}</span><span class="n">${DATA.formats[z].label.replace(/\s*\(\.[a-z]+\)$/, "")}</span>${ziele[z] ? '<span class="o" title="braucht Office oder LibreOffice">*</span>' : ""}</li>`
+  ).join("");
+  document.getElementById("legende").hidden = !office;
+}
+fetch("formats.json").then(r => r.json()).then(d => {
+  DATA = d;
+  const box = document.getElementById("quellen");
+  for (const cat of d.cats) {
+    const fs = Object.keys(d.formats).filter(f => d.formats[f].cat === cat);
+    if (!fs.length) continue;
+    const g = document.createElement("div");
+    g.className = "gruppe";
+    g.innerHTML = `<div class="gname">${GRUPPEN[cat] || cat}</div>`;
+    const row = document.createElement("div");
+    row.className = "formate";
+    fs.forEach(f => row.appendChild(knopf(f)));
+    g.appendChild(row);
+    box.appendChild(g);
+  }
+  waehle("pdf");
+}).catch(() => {
+  document.getElementById("antwort").textContent = "Heast, de Tafel is grad ned zum Lesen.";
+});
+</script>
+</body>
+</html>
